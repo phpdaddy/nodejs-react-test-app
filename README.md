@@ -4,9 +4,11 @@
 ## Getting Started
 
 ### Frontend
+
 npm install
 npm run build
 
+### Run all
 
 docker-compose build
 
