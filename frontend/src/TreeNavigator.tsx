@@ -5,7 +5,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import axios from 'axios';
 import withStyles from "@material-ui/core/styles/withStyles";
-import {TextField} from "@material-ui/core";
+import {CircularProgress, TextField} from "@material-ui/core";
 
 
 const styles = {
@@ -20,8 +20,20 @@ const styles = {
         marginTop: 100,
         width: '100%',
         marginBottom: 10
+    },
+    progress: {
+        margin: '0 auto',
+        display: 'block'
+    },
+    progressContainer: {
+        margin: '0 auto',
+        display: 'block'
+    },
+    progressHeader: {
+        textAlign: 'center' as 'center'
     }
 };
+
 const getTreeItemsFromData = (treeItems: any) => {
     return treeItems.map((treeItemData: any, index: number) => {
         let children = undefined;
@@ -32,7 +44,7 @@ const getTreeItemsFromData = (treeItems: any) => {
             <TreeItem
                 key={treeItemData.name + index.toString()}
                 nodeId={treeItemData.name + index.toString()}
-                label={treeItemData.name}
+                label={treeItemData.name + '(' + treeItemData.size + ')'}
                 children={children}
             />
         );
@@ -41,12 +53,12 @@ const getTreeItemsFromData = (treeItems: any) => {
 
 class TreeNavigator extends Component<any, any> {
     state: any = {
-        treeItems: []
+        treeItems: null
     };
 
     async componentDidMount() {
         const response = await axios.get('http://localhost:8081/nodes-tree');
-        //console.log(response.data);
+
         this.setState({
             treeItems: response.data
         });
@@ -58,13 +70,20 @@ class TreeNavigator extends Component<any, any> {
                 className={this.props.classes.text}
                 placeholder="Search">
             </TextField>
+            {!this.state.treeItems &&
+            <div className={this.props.classes.progressContainer}>
+                <h3 className={this.props.classes.progressHeader}>Loading tree ...</h3>
+                <CircularProgress
+                    className={this.props.classes.progress}/>
+            </div>}
+            {this.state.treeItems &&
             <TreeView
                 className={this.props.classes.root}
                 defaultCollapseIcon={<ExpandMoreIcon/>}
                 defaultExpandIcon={<ChevronRightIcon/>}
             >
                 {getTreeItemsFromData(this.state.treeItems)}
-            </TreeView>
+            </TreeView>}
         </div>
     }
 }
