@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TreeItem from '@material-ui/lab/TreeItem';
 import axios from 'axios';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {CircularProgress, TextField} from "@material-ui/core";
+import {TreeItem} from "@material-ui/lab";
 
 
 const styles = {
@@ -31,20 +31,33 @@ const styles = {
     },
     progressHeader: {
         textAlign: 'center' as 'center'
-    }
+    },
+    treeItemFound: {
+        '& $content': {
+            backgroundColor: `#e2e2ff`,
+        },
+    },
+    content: {}
 };
 
-const getTreeItemsFromData = (treeItems: any) => {
+const getTreeItemsFromData = (treeItems: any, props: any) => {
     return treeItems.map((treeItemData: any, index: number) => {
         let children = undefined;
         if (treeItemData.children && treeItemData.children.length > 0) {
-            children = getTreeItemsFromData(treeItemData.children);
+            children = getTreeItemsFromData(treeItemData.children, props);
         }
         return (
             <TreeItem
+
+                classes={
+                    treeItemData.size ? {
+                        root: props.classes.treeItemFound,
+                        content: props.classes.content,
+                    } : null as any
+                }
                 key={treeItemData.name + index.toString()}
                 nodeId={treeItemData.name + index.toString()}
-                label={treeItemData.name + ' (' + treeItemData.size + ')'}
+                label={treeItemData.name + (treeItemData.size ? ' (' + treeItemData.size + ')' : '')}
                 children={children}
             />
         );
@@ -65,7 +78,7 @@ class TreeNavigator extends Component<any, any> {
         this.setState({
             treeItems: null
         });
-        const response = await axios.get('http://localhost:8081/nodes-tree?search' + this.state.search);
+        const response = await axios.get('http://localhost:8081/nodes-tree?search=' + this.state.search);
 
         this.setState({
             treeItems: response.data
@@ -95,7 +108,7 @@ class TreeNavigator extends Component<any, any> {
                 defaultCollapseIcon={<ExpandMoreIcon/>}
                 defaultExpandIcon={<ChevronRightIcon/>}
             >
-                {getTreeItemsFromData(this.state.treeItems)}
+                {getTreeItemsFromData(this.state.treeItems, this.props)}
             </TreeView>}
         </div>
     }
