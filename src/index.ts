@@ -1,7 +1,8 @@
-const express = require("express");
+import express from 'express'
+import {connectDb} from "./connection";
+import {User} from "./User.model";
+
 const app = express();
-const connectDb = require("./src/connection");
-const User = require("./src/User.model");
 
 const PORT = 8080;
 
@@ -19,7 +20,7 @@ app.get("/user-create", async (req, res) => {
     res.send("User created \n");
 });
 
-app.listen(PORT, function () {
+app.listen(PORT, () => {
     console.log(`Listening on ${PORT}`);
 
     connectDb().then(() => {
