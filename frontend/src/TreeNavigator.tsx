@@ -53,11 +53,19 @@ const getTreeItemsFromData = (treeItems: any) => {
 
 class TreeNavigator extends Component<any, any> {
     state: any = {
-        treeItems: null
+        treeItems: null,
+        search: ''
     };
 
     async componentDidMount() {
-        const response = await axios.get('http://localhost:8081/nodes-tree');
+        this.fetchTree();
+    }
+
+    async fetchTree() {
+        this.setState({
+            treeItems: null
+        });
+        const response = await axios.get('http://localhost:8081/nodes-tree?search' + this.state.search);
 
         this.setState({
             treeItems: response.data
@@ -68,7 +76,12 @@ class TreeNavigator extends Component<any, any> {
         return <div>
             <TextField
                 className={this.props.classes.text}
-                placeholder="Search">
+                placeholder="Search"
+                value={this.state.search} onChange={({target}) => {
+                this.setState({search: target.value}, () => {
+                    this.fetchTree();
+                });
+            }}>
             </TextField>
             {!this.state.treeItems &&
             <div className={this.props.classes.progressContainer}>
