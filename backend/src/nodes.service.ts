@@ -9,7 +9,6 @@ export const nodesToTree = (nodes: any) => {
         for (const lvl of arr) {
             path += '[' + lvl.trim() + ']';
         }
-
         _.set(tree, path + '.name', last);
         _.set(tree, path + '.size', node.size);
     }
@@ -22,11 +21,12 @@ export const nodesToTree = (nodes: any) => {
 const normalizeKeys = (tree: any) => {
     const keys = Object.keys(tree).filter(k => k !== 'name' && k !== 'size');
 
-    tree['children'] = [];
+    tree.children = [];
     for (const key of keys) {
-        let val = tree[key];
+        const val = tree[key];
+        val.name = key;
         normalizeKeys(val);
-        tree['children'].push(val);
+        tree.children.push(val);
         delete tree[key];
     }
 };
