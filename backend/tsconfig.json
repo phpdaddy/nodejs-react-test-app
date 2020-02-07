@@ -6,8 +6,8 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
+    "outDir": "../dist",
+    "baseUrl": "..",
     "paths": {
       "*": [
         "node_modules/*"
@@ -16,6 +16,6 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src/**/*"
+    "backend/src/**/*"
   ]
 }
