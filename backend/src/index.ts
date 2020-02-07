@@ -5,7 +5,7 @@ import result from './assets/result.json'
 
 const app = express();
 
-const PORT = 8080;
+const PORT = 8081;
 
 app.get("/nodes", async (req, res) => {
     const nodes = await Node.find();
@@ -21,7 +21,7 @@ app.listen(PORT, async () => {
 
     console.log("MongoDb connected");
 
-    await Node.remove({});
+    await Node.deleteMany({});
     await Node.create(result);
 
     console.log("MongoDb data loaded");
