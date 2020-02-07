@@ -44,7 +44,7 @@ const getTreeItemsFromData = (treeItems: any) => {
             <TreeItem
                 key={treeItemData.name + index.toString()}
                 nodeId={treeItemData.name + index.toString()}
-                label={treeItemData.name + '(' + treeItemData.size + ')'}
+                label={treeItemData.name + ' (' + treeItemData.size + ')'}
                 children={children}
             />
         );
