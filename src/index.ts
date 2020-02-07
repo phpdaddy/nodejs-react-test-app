@@ -21,7 +21,8 @@ app.listen(PORT, async () => {
 
     console.log("MongoDb connected");
 
-    //await mongoose.connection.db.dropCollection('node');
+    await Node.remove({});
+    await Node.create(result);
 
-    Node.create(result);
+    console.log("MongoDb data loaded");
 });
