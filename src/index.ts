@@ -1,29 +1,27 @@
 import express from 'express'
 import {connectDb} from "./connection";
-import {User} from "./User.model";
+import {Node} from "./Node.model";
+import result from './assets/result.json'
 
 const app = express();
 
 const PORT = 8080;
 
-app.get("/users", async (req, res) => {
-    const users = await User.find();
+app.get("/nodes", async (req, res) => {
+    const nodes = await Node.find();
 
-    res.json(users);
+    res.json(nodes);
 });
 
-app.get("/user-create", async (req, res) => {
-    const user = new User({username: "userTest"});
 
-    await user.save().then(() => console.log("User created"));
-
-    res.send("User created \n");
-});
-
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Listening on ${PORT}`);
 
-    connectDb().then(() => {
-        console.log("MongoDb connected");
-    });
+    await connectDb();
+
+    console.log("MongoDb connected");
+
+    //await mongoose.connection.db.dropCollection('node');
+
+    Node.create(result);
 });

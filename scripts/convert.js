@@ -3,33 +3,31 @@ const {JSDOM} = jsdom;
 
 const fs = require('fs');
 
-require.extensions['.html'] = function (module, filename) {
+require.extensions['.xml'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
 
-const input = require("../src/assets/input.html");
+const input = require("../src/assets/structure_released.xml");
 
-function loopTree(prefix, ul) {
-    const lis = ul.querySelectorAll(":scope > li");
-    for (var i = 0; i < lis.length; ++i) {
-        const nodeText = lis[i].querySelector('a').textContent.trim();
+function loopTree(array, prefix, syset) {
+    const name = syset.getAttribute('words').trim();
 
-        const groups = /(.+)\((.+)\)/.exec(nodeText);
-        const name = groups[1].trim();
-        const size = groups[2].trim();
+    const size = syset.querySelectorAll("synset").length;
 
-        const node = {
-            name: prefix ? prefix + " > " + name : name,
-            size: size
-        };
+    const newName = prefix ? prefix + " > " + name : name;
 
-        console.log(node);
+    const node = {
+        name: newName,
+        size: size
+    };
 
-        const ul = lis[i].querySelector("ul");
+    console.log(node);
 
-        if (ul) {
-            loopTree(node.name, ul);
-        }
+    array.push(node);
+
+    for (var i = 0; i < syset.children.length; ++i) {
+
+        loopTree(array, newName, syset.children[i]);
     }
 }
 
@@ -38,6 +36,9 @@ module.exports.run = function () {
 
     const {window} = new JSDOM(input);
 
-    loopTree('', window.document.querySelector("ul"));
+    let array = [];
+    loopTree(array, '', window.document.querySelector("synset"));
 
+    fs.writeFile('src/assets/result.json', JSON.stringify(array), 'utf8', () => {
+    });
 };
