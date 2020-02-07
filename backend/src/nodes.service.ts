@@ -4,7 +4,7 @@ export const nodesToTree = (nodes: any) => {
     const tree: any = {};
     for (const node of nodes) {
         const arr: string[] = node.name.split(">");
-        const last = arr[arr.length - 1];
+        const last = arr[arr.length - 1].trim();
         let path = '';
         for (const lvl of arr) {
             path += '[' + lvl.trim() + ']';

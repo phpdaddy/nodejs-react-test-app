@@ -3,7 +3,7 @@ import {connectDb} from "./connection";
 import {Node} from "./Node.model";
 import result from './assets/result.json'
 import cors from 'cors'
-import {nodesToTree} from "./nodes";
+import {nodesToTree} from "./nodes.service";
 
 const app = express();
 
@@ -20,7 +20,8 @@ app.get("/nodes", async (req, res) => {
 
 
 app.get("/nodes-tree", async (req, res) => {
-    const nodes = await Node.find();
+    console.log(req.query);
+    const nodes = await Node.find({name: {"$regex": req.query.search || '', "$options": "i"}});
 
     const tree = nodesToTree(nodes);
     console.log(tree);
