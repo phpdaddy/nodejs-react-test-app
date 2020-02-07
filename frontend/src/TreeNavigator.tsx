@@ -22,8 +22,8 @@ const getTreeItemsFromData = (treeItems: any) => {
         }
         return (
             <TreeItem
-                key={index.toString()}
-                nodeId={index.toString()}
+                key={treeItemData.name + index.toString()}
+                nodeId={treeItemData.name + index.toString()}
                 label={treeItemData.name}
                 children={children}
             />
@@ -37,7 +37,7 @@ class TreeNavigator extends Component<any, any> {
     };
 
     async componentDidMount() {
-        const response = await axios.get('http://localhost:8081/nodes');
+        const response = await axios.get('http://localhost:8081/nodes-tree');
         //console.log(response.data);
         this.setState({
             treeItems: response.data
