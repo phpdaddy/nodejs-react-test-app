@@ -2,8 +2,11 @@ import express from 'express'
 import {connectDb} from "./connection";
 import {Node} from "./Node.model";
 import result from './assets/result.json'
+import cors from 'cors'
 
 const app = express();
+
+app.use(cors());
 
 const PORT = 8081;
 

@@ -1,40 +1,65 @@
-import React from 'react';
+import React, {Component} from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import axios from 'axios';
+import withStyles from "@material-ui/core/styles/withStyles";
 
-const useStyles = makeStyles({
+interface ServerResponse {
+    data: ServerData
+}
+
+interface ServerData {
+    foo: string
+    bar: number
+}
+
+const styles = {
     root: {
         height: 216,
         flexGrow: 1,
-        maxWidth: 400,
     },
-});
+};
+const getTreeItemsFromData = (treeItems: any) => {
+    return treeItems.map((treeItemData: any, index: number) => {
+        let children = undefined;
+        if (treeItemData.children && treeItemData.children.length > 0) {
+            children = getTreeItemsFromData(treeItemData.children);
+        }
+        return (
+            <TreeItem
+                key={index.toString()}
+                nodeId={index.toString()}
+                label={treeItemData.name}
+                children={children}
+            />
+        );
+    });
+};
 
-export default function TreeNavigator() {
-    const classes = useStyles();
+class TreeNavigator extends Component<any, any> {
+    state: any = {
+        treeItems: []
+    };
 
-    return (
-        <TreeView
-            className={classes.root}
+    async componentDidMount() {
+        const response = await axios.get('http://localhost:8081/nodes');
+        //console.log(response.data);
+        this.setState({
+            treeItems: response.data
+        });
+    }
+
+    render(): React.ReactNode {
+        return <TreeView
+            className={this.props.classes.root}
             defaultCollapseIcon={<ExpandMoreIcon/>}
             defaultExpandIcon={<ChevronRightIcon/>}
         >
-            <TreeItem nodeId="1" label="Applications">
-                <TreeItem nodeId="2" label="Calendar"/>
-                <TreeItem nodeId="3" label="Chrome"/>
-                <TreeItem nodeId="4" label="Webstorm"/>
-            </TreeItem>
-            <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="6" label="Material-UI">
-                    <TreeItem nodeId="7" label="src">
-                        <TreeItem nodeId="8" label="index.js"/>
-                        <TreeItem nodeId="9" label="tree-view.js"/>
-                    </TreeItem>
-                </TreeItem>
-            </TreeItem>
+            {getTreeItemsFromData(this.state.treeItems)}
         </TreeView>
-    );
+    }
 }
+
+export default withStyles(styles)(TreeNavigator);
