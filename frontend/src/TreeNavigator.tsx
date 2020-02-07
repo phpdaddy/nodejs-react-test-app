@@ -6,19 +6,12 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import axios from 'axios';
 import withStyles from "@material-ui/core/styles/withStyles";
 
-interface ServerResponse {
-    data: ServerData
-}
-
-interface ServerData {
-    foo: string
-    bar: number
-}
 
 const styles = {
     root: {
         height: 216,
         flexGrow: 1,
+        maxWidth: 800
     },
 };
 const getTreeItemsFromData = (treeItems: any) => {
