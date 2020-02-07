@@ -5,14 +5,22 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import axios from 'axios';
 import withStyles from "@material-ui/core/styles/withStyles";
+import {TextField} from "@material-ui/core";
 
 
 const styles = {
     root: {
         height: 216,
         flexGrow: 1,
-        maxWidth: 800
+        maxWidth: 800,
+        display: 'flex',
+        justifyContent: 'center',
     },
+    text: {
+        marginTop: 100,
+        width: '100%',
+        marginBottom: 10
+    }
 };
 const getTreeItemsFromData = (treeItems: any) => {
     return treeItems.map((treeItemData: any, index: number) => {
@@ -45,13 +53,19 @@ class TreeNavigator extends Component<any, any> {
     }
 
     render(): React.ReactNode {
-        return <TreeView
-            className={this.props.classes.root}
-            defaultCollapseIcon={<ExpandMoreIcon/>}
-            defaultExpandIcon={<ChevronRightIcon/>}
-        >
-            {getTreeItemsFromData(this.state.treeItems)}
-        </TreeView>
+        return <div>
+            <TextField
+                className={this.props.classes.text}
+                placeholder="Search">
+            </TextField>
+            <TreeView
+                className={this.props.classes.root}
+                defaultCollapseIcon={<ExpandMoreIcon/>}
+                defaultExpandIcon={<ChevronRightIcon/>}
+            >
+                {getTreeItemsFromData(this.state.treeItems)}
+            </TreeView>
+        </div>
     }
 }
 
