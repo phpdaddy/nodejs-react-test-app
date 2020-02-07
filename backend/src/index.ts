@@ -12,17 +12,33 @@ app.use(cors());
 const PORT = 8081;
 
 const nodesToTree = (nodes: any) => {
-    const tree = {};
+    const tree: any = {};
     for (const node of nodes) {
-        const arr = node.name.split(">");
-        const last = arr.pop();
+        const arr: string[] = node.name.split(">");
+        const last = arr[arr.length - 1];
         let path = '';
         for (const lvl of arr) {
-            path += '[' + lvl + ']';
+            path += '[' + lvl.trim() + ']';
         }
+
         _.set(tree, path + '.name', last);
     }
-    return tree;
+
+    normalizeKeys(tree);
+
+    return tree.children;
+};
+
+const normalizeKeys = (tree: any) => {
+    const keys = Object.keys(tree).filter(k => k !== 'name');
+
+    tree['children'] = [];
+    for (const key of keys) {
+        let val = tree[key];
+        normalizeKeys(val);
+        tree['children'].push(val);
+        delete tree[key];
+    }
 };
 
 app.get("/nodes", async (req, res) => {
@@ -37,7 +53,7 @@ app.get("/nodes-tree", async (req, res) => {
 
     const tree = nodesToTree(nodes);
     console.log(tree);
-    res.json();
+    res.json(tree);
 });
 
 
